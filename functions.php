@@ -39,7 +39,7 @@
 		//ühendus
 		$mysqli = new mysqli($GLOBALS["serverHost"],$GLOBALS["serverUsername"],$GLOBALS["serverPassword"],$GLOBALS["database"]);
 		//käsk
-		$stmt = $mysqli->prepare("INSERT INTO users (email, password, name, gender, birthday) VALUES (?, ?, ?, ?, ?, ?)");
+		$stmt = $mysqli->prepare("INSERT INTO users (email, password, name, gender, birthday) VALUES (?, ?, ?, ?, ?)");
 		
 		echo $mysqli->error;
 		//asendan küsimärgi väärtusetega
@@ -145,8 +145,14 @@
 		//seni kuni on 1 rida andmeid saada (10 rida = 10 korda)
 		while ($stmt->fetch()) {
 			
+			$person = new StdClass();
+			$person->id = $id;
+			$person->sex = $sex;
+			$person->clothingColor = $color;
+			$person->created = $created;
+			
 			//echo $color."<br>";
-			array_push($result, $color);
+			array_push($result, $person);
 			
 		}
 		$stmt->close();
