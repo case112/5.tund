@@ -1,5 +1,5 @@
 <?php
-	require("../../../config.php");
+	
 	require("functions.php");
 	
 	//kas kasutaja on sisse logitud
@@ -99,6 +99,14 @@
 				
 	}	
 	
+	if ( isset ( $_POST["name"] ) ) {
+		if ( empty ( $_POST["name"] ) ) {
+			$nameError = "See väli on kohustuslik!";
+		} else {
+			$name = $_POST["name"];
+		}
+	}
+	
 	if ( isset ( $_POST["gender"] ) ) {
 		if ( empty ( $_POST["gender"] ) ) {
 			$genderError = "See väli on kohustuslik!";
@@ -106,6 +114,18 @@
 			$gender = $_POST["gender"];
 		}
 	}
+	
+	if ( isset ( $_POST["birthday"] ) ) {
+		if ( empty ( $_POST["birthday"] ) ) {
+			$birthdayError = "See väli on kohustuslik!";
+		} else {
+			$birthday = $_POST["birthday"];
+		}
+	}
+	
+	
+	
+	
 
 	// tean et ühtegi viga ei olnud ja saan kasutaja andmed salvestada
 	if ( isset($_POST["signupPassword"]) &&
@@ -123,7 +143,7 @@
 		echo "räsi ".$password."<br>";
 		
 		
-		signup($signupEmail, $password);		
+		signup($signupEmail, $password, $name, $gender, $birthday);		
 	}
 	
 	// kontrollida, et kasutaja täitis välja ja võib sisse logida
@@ -176,9 +196,7 @@
 			<br><p>
 			<input type="password" name="signupPassword" placeholder="Parool"> <?php echo $signupPasswordError;?>
 			<br><p>
-			<input type="text" name="signup" placeholder="Kasutajanimi"> <?php echo $signupEmailError;?>
-			<br><p>
-			<input type="text" name="signup" placeholder="Nimi"> 
+			<input type="text" name="name" placeholder="Nimi"> 
 			<br><br>
 			
 			 <?php if($gender == "male") { ?>
@@ -200,7 +218,7 @@
 			 <?php } ?>
 			<br>
 			
-			<input type="date" name="signupDate" placeholder="Sünnikuupäev"> <?php echo $signupDateError;?>
+			<input type="date" name="birthday" placeholder="Sünnikuupäev"> <?php echo $signupDateError;?>
 			<br><sup>pp/kk/aaaa</sup>
 			<br><p>
 			<input type="submit" value="Registreeri kasutaja">

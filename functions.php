@@ -1,4 +1,6 @@
 <?php
+
+	require("../../../config.php");
      /*
 	function sum ($x, $y) {
 		
@@ -30,25 +32,25 @@
 	
 	$database = "if16_case112";
 	
-	function signup ($email, $password) {
+	function signup ($email, $password, $name, $gender, $birthday) {
 		
 		$error = "";
 		
-		//ühendus
+		//Ã¼hendus
 		$mysqli = new mysqli($GLOBALS["serverHost"],$GLOBALS["serverUsername"],$GLOBALS["serverPassword"],$GLOBALS["database"]);
-		//käsk
-		$stmt = $mysqli->prepare("INSERT INTO users (email, password) VALUES (?, ?)");
+		//kÃ¤sk
+		$stmt = $mysqli->prepare("INSERT INTO users (email, password, name, gender, birthday) VALUES (?, ?, ?, ?, ?, ?)");
 		
 		echo $mysqli->error;
-		//asendan küsimärgi väärtusetega
-		//iga muutuja kohta 1 täht, mis tüüpi muutuja on
+		//asendan kÃ¼simÃ¤rgi vÃ¤Ã¤rtusetega
+		//iga muutuja kohta 1 tÃ¤ht, mis tÃ¼Ã¼pi muutuja on
 		// s- sring, i- integer, d- double/float
-		$stmt->bind_param("ss", $email, $password);
+		$stmt->bind_param("sssss", $email, $password, $name, $gender, $birthday);
 		
 		if ($stmt->execute()) {
 			
 			
-			echo "salvestamine õnnestus";
+			echo "salvestamine Ãµnnestus";
 		} else {
 			echo "ERROR ".$stmt->error;
 		}
@@ -58,23 +60,23 @@
 	
 	function login($email, $password) {
 		
-		//ühendus
+		//Ã¼hendus
 		$mysqli = new mysqli($GLOBALS["serverHost"],$GLOBALS["serverUsername"],$GLOBALS["serverPassword"],$GLOBALS["database"]);
-		//käsk
-		$stmt = $mysqli->prepare(" SELECT id, email, password, created FROM users WHERE email = ?");
+		//kÃ¤sk
+		$stmt = $mysqli->prepare(" SELECT id, email, password FROM users WHERE email = ?");
 		
 		echo $mysqli->error;
-		//asendan küsimärgi
+		//asendan kÃ¼simÃ¤rgi
 		$stmt->bind_param("s", $email);
 		
-		//määran tulpadele muutujad
-		$stmt->bind_result($id, $emailFromDb, $passwordFromDb, $created);
+		//mÃ¤Ã¤ran tulpadele muutujad
+		$stmt->bind_result($id, $emailFromDb, $passwordFromDb);
 		$stmt->execute();
 		
 		if ($stmt->fetch()) {
 			//oli rida
 			
-			//võrdlen paroole
+			//vÃµrdlen paroole
 			$hash = hash("sha512", $password);
 			if ($hash == $passwordFromDb) {
 				echo "Kasutaja ".$id." logis sisse.";
@@ -100,7 +102,59 @@
 		return $error;
 		
 	}
-
+	//andmete salvestamine andmebaasi
+	function savePeople ($sex, $color) {
+		
+		$error = "";
+		
+		//Ã¼hendus
+		$mysqli = new mysqli($GLOBALS["serverHost"],$GLOBALS["serverUsername"],$GLOBALS["serverPassword"],$GLOBALS["database"]);
+		//kÃ¤sk
+		$stmt = $mysqli->prepare("INSERT INTO clothingOnTheCampus (sex, color) VALUES (?, ?)");
+		
+		echo $mysqli->error;
+		//asendan kÃ¼simÃ¤rgi vÃ¤Ã¤rtusetega
+		//iga muutuja kohta 1 tÃ¤ht, mis tÃ¼Ã¼pi muutuja on
+		// s- sring, i- integer, d- double/float
+		$stmt->bind_param("ss", $sex, $color);
+		
+		if ($stmt->execute()) {
+			
+			
+			echo "salvestamine Ãµnnestus"."<br>";
+		} else {
+			echo "ERROR ".$stmt->error;
+		}
+		
+		
+	}
+	//fetchib andmeid andmebaasist
+	function getAllPeople () {
+		$mysqli = new mysqli($GLOBALS["serverHost"],$GLOBALS["serverUsername"],$GLOBALS["serverPassword"],$GLOBALS["database"]);
+	
+		$stmt = $mysqli->prepare("SELECT id, sex, color, created FROM clothingOnTheCampus");
+		
+		echo $mysqli->error;
+		
+		$stmt->bind_result($id, $sex, $color, $created);
+		$stmt->execute();
+		
+		$result = array();
+		
+		
+		//seni kuni on 1 rida andmeid saada (10 rida = 10 korda)
+		while ($stmt->fetch()) {
+			
+			//echo $color."<br>";
+			array_push($result, $color);
+			
+		}
+		$stmt->close();
+		$mysqli->close();
+		return $result;
+		
+		
+	}
 
 
 
